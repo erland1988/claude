@@ -15,7 +15,8 @@
     │   └── templates/     #   输出模板
     └── work-in-process/   # WIP.md 驱动开发 + 飞书归档
         ├── SKILL.md       #   技能定义与执行规则
-        ├── config.json    #   飞书应用配置（不入库）
+        ├── config.json.example   #   飞书应用配置模板（入库）
+        ├── config.json           #   飞书应用配置（不入库，复制自 .example 并填写）
         ├── scripts/       #   飞书 API 交互脚本
         │   ├── requirements.txt
         │   ├── feishu_common.py
@@ -95,7 +96,7 @@
 | `wip-feishu-read` | 按关键字搜索并阅读匹配文档的完整内容 |
 | `wip-feishu-delete` | 删除 WIP 文档（按关键字/doc_id/--all） |
 
-**飞书配置**：在 `.claude/skills/work-in-process/config.json` 中填入飞书应用凭证：
+**飞书配置**：将 `.claude/skills/work-in-process/config.json.example` 复制为 `config.json`（去 `.example` 后缀），然后填入飞书应用凭证：
 
 ```json
 {
@@ -124,7 +125,7 @@
 
 1. 将本仓库 `.claude/` 目录复制到你的项目根目录
 2. Claude Code 自动识别自定义命令和技能模块
-3. 如需飞书功能，在 `config.json` 中填入飞书应用凭证
+3. 如需飞书功能，复制 `config.json.example` 为 `config.json` 并填入飞书应用凭证
 4. 输入 `/命令名` 触发命令，或在对话中描述需求自动匹配技能
 
 ## 许可证
