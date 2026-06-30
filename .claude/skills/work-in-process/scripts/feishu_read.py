@@ -109,11 +109,11 @@ if __name__ == "__main__":
         if len(matches) > 1:
             print(DIVIDER)
             print(f"[{i + 1}/{len(matches)}] {doc['title']}")
-            print(f"  {doc['url']}")
+            print(f"  {doc['link']}")
             print(DIVIDER)
         else:
             print(f"  {doc['title']}")
-            print(f"  {doc['url']}\n")
+            print(f"  {doc['link']}\n")
 
         try:
             blocks = fetch_blocks(token, doc["doc_id"])

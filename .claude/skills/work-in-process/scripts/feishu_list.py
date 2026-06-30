@@ -101,7 +101,7 @@ def render_tsv(docs):
         {"key": "index", "label": "#"},
         {"key": "doc_id", "label": "Doc ID"},
         {"key": "title", "label": "标题"},
-        {"key": "url", "label": "链接"},
+        {"key": "link", "label": "链接"},
     ]
     print("\t".join(col["label"] for col in columns))
     for i, doc in enumerate(docs, 1):
@@ -109,7 +109,7 @@ def render_tsv(docs):
             str(i),
             doc.get("doc_id", ""),
             doc.get("title", ""),
-            doc.get("url", ""),
+            doc.get("link", ""),
         ]
         print("\t".join(row))
 
