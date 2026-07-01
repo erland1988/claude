@@ -10,8 +10,9 @@ import requests
 BASE_URL = "https://open.feishu.cn/open-apis"
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-SKILL_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, os.pardir))
-CONFIG_PATH = os.path.join(SKILL_DIR, "config.json")
+# 向上三级：scripts -> wip-feishu -> skills -> work-in-process (skill 根目录)
+SKILL_ROOT = os.path.normpath(os.path.join(SCRIPT_DIR, os.pardir, os.pardir, os.pardir))
+CONFIG_PATH = os.path.join(SKILL_ROOT, "config.json")
 
 # 固定根目录名称，所有操作都在该目录下进行
 ROOT_FOLDER = "work-in-process"
