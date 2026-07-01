@@ -631,6 +631,7 @@ Claude: 正在合并设计文档...
       - business-logic: 1500 字
       - api-endpoints: 600 字
 Claude: 已上传到飞书: https://bytedance.feishu.cn/docx/xxxxx
+Claude: ledger 已自动更新: uploaded order-system-refactor
 ```
 
 ### `wip-feishu-list`
