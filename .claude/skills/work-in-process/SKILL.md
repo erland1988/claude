@@ -445,25 +445,77 @@ $ wip-worktree clean order-system data-models
   2. 按 Step 顺序执行：写代码 → 验证 → 提交
   3. 每步完成后更新进度
 
-**模式 B：子代理驱动（复杂任务）**
+**模式 B：子代理驱动（复杂任务）** ★
 - 每个 Step 派独立子代理执行
 - 实现子代理 → 审查子代理 → 修复子代理
 - 质量更高，适合复杂任务
-- 流程：
-  ```
-  读取 plan.md
-      │
-      ├── Step 1: 派实现子代理
-      │       ├── 编码 → 测试 → 提交 → 自审 → 写报告
-      │       └── 状态: DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED
-      │
-      ├── 派审查子代理（规格符合性 + 代码质量）
-      │       └── 结果: 通过 / 需修复（Critical/Important/Minor）
-      │
-      ├── 如需修复: 派修复子代理 → 重新审查
-      │
-      └── 标记 Step 1 完成，更新 ledger
-  ```
+
+**子代理驱动流程**：
+
+```
+读取 plan.md
+    │
+    ├── Step N: 派实现子代理 (implementer)
+    │       ├── 输入：Task Brief + 接口契约 + 全局约束
+    │       ├── 动作：编码 → 测试 → 提交 → 自审
+    │       └── 输出：
+    │           STATUS: DONE
+    │           COMMITS: <commit-list>
+    │           TESTS: <test-results>
+    │           SELF-REVIEW: <checklist>
+    │
+    ├── 生成审查包 (review-package.py)
+    │       └── 输出：review-package-{timestamp}.md
+    │
+    ├── 派审查子代理 (reviewer)
+    │       ├── 输入：Task Brief + 审查包 + 全局约束
+    │       ├── 动作：规格符合性检查 + 代码质量检查
+    │       └── 输出：
+    │           SPEC_COMPLIANCE: PASS/FAIL
+    │           CODE_QUALITY_VERDICT: APPROVED/NEEDS_FIX
+    │           FINDINGS: <Critical/Important/Minor issues>
+    │
+    ├── 判断审查结果
+    │       ├── 通过 → 标记 Step N 完成
+    │       └── 需修复 → 派修复子代理
+    │
+    ├── 派修复子代理 (fixer) [如需]
+    │       ├── 输入：Review Findings + 当前代码
+    │       ├── 动作：修复问题 → 重新测试 → 提交
+    │       └── 输出：
+    │           STATUS: FIXED
+    │           FIXES_APPLIED: <list>
+    │           VERIFICATION: <test-results>
+    │
+    └── 重新审查 [如需]
+            └── 循环直到通过
+
+全部 Step 完成后: 派最终审查子代理
+```
+
+**子代理类型**：
+
+| 子代理 | 职责 | 输入 | 输出 |
+|--------|------|------|------|
+| **Implementer** | 实现单个 Step | Task Brief + 接口契约 | 代码 + 测试 + 状态报告 |
+| **Reviewer** | 审查实现质量 | 审查包 + Task Brief | 合规性判定 + 问题清单 |
+| **Fixer** | 修复审查发现的问题 | 问题清单 + 当前代码 | 修复后的代码 + 验证结果 |
+
+**子代理提示词位置**：
+- `.claude/skills/work-in-process/subagents/implementer.md`
+- `.claude/skills/work-in-process/subagents/reviewer.md`
+- `.claude/skills/work-in-process/subagents/fixer.md`
+
+**工具脚本**：
+- `scripts/review-package.py`：生成审查包（diff 文件）
+
+**自动判断逻辑**：
+```python
+if step_count <= 3 and complexity == 'simple':
+    mode = 'current_session'
+elif step_count > 3 or complexity == 'complex':
+    mode = 'subagent_driven'
+```
 
 **通用执行要求**：
 1. 执行前用 `git status` 确认工作区干净
