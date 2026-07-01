@@ -12,6 +12,20 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
+def get_project_root():
+    """获取项目根目录"""    current = Path.cwd()
+    if '.claude' in str(current):
+        while current.name != '.claude' and current != current.parent:
+            current = current.parent
+        if current.name == '.claude':
+            return current.parent
+    check = current
+    while check != check.parent:
+        if (check / '.wip').exists():
+            return check
+        check = check.parent
+    return current
+
 
 def run_git(args, cwd=None):
     """运行 git 命令"""
@@ -24,24 +38,14 @@ def run_git(args, cwd=None):
     return result.returncode == 0, result.stdout, result.stderr
 
 
-def get_wip_root():
-    """获取 .wip 目录路径"""
-    current = Path.cwd()
-    while current != current.parent:
-        wip = current / '.wip'
-        if wip.exists():
-            return current, wip
-        current = current.parent
-    return None, None
-
-
 def generate_review_package(project_name, module_name, base_commit='HEAD~1'):
     """
     生成审查包
     base_commit: 比较的基础提交（默认 HEAD~1，即上一个提交）
     """
-    repo_root, wip_root = get_wip_root()
-    if not repo_root:
+    project_root = get_project_root()
+    wip_root = project_root / '.wip'
+    if not wip_root.exists():
         print("[ERROR] 未找到 .wip 目录", file=sys.stderr)
         sys.exit(1)
     

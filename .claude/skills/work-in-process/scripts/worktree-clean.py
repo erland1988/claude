@@ -11,6 +11,21 @@ import shutil
 import subprocess
 from pathlib import Path
 
+def get_project_root():
+    """获取项目根目录"""
+    current = Path.cwd()
+    if '.claude' in str(current):
+        while current.name != '.claude' and current != current.parent:
+            current = current.parent
+        if current.name == '.claude':
+            return current.parent
+    check = current
+    while check != check.parent:
+        if (check / '.wip').exists():
+            return check
+        check = check.parent
+    return current
+
 
 def run_git(args, cwd=None):
     """运行 git 命令"""
@@ -23,20 +38,10 @@ def run_git(args, cwd=None):
     return result.returncode == 0, result.stdout, result.stderr
 
 
-def get_wip_root():
-    """获取 .wip 目录路径"""
-    current = Path.cwd()
-    while current != current.parent:
-        wip = current / '.wip'
-        if wip.exists():
-            return current, wip
-        current = current.parent
-    return None, None
-
-
 def clean_worktree(project_name, module_name, force=False):
     """清理 worktree"""
-    repo_root, wip_root = get_wip_root()
+    project_root = get_project_root()
+    wip_root = project_root / '.wip'
     if not repo_root:
         print("[ERROR] 未找到 .wip 目录", file=sys.stderr)
         sys.exit(1)

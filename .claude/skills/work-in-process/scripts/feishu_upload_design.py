@@ -33,14 +33,28 @@ def load_config():
         return json.load(f)
 
 
+def get_project_root():
+    """获取项目根目录"""
+    current = Path.cwd()
+    if '.claude' in str(current):
+        while current.name != '.claude' and current != current.parent:
+            current = current.parent
+        if current.name == '.claude':
+            return current.parent
+    check = current
+    while check != check.parent:
+        if (check / '.wip').exists():
+            return check
+        check = check.parent
+    return current
+
+
 def find_wip_root():
     """查找 .wip 目录"""
-    current = Path.cwd()
-    while current != current.parent:
-        wip = current / ".wip"
-        if wip.exists():
-            return wip
-        current = current.parent
+    project_root = get_project_root()
+    wip_path = project_root / '.wip'
+    if wip_path.exists():
+        return wip_path
     return None
 
 

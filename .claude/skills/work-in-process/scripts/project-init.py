@@ -98,11 +98,31 @@ def suggest_names(chinese_desc):
     return unique[:3]
 
 
+def get_project_root():
+    """获取项目根目录（包含 .wip 的目录）"""
+    current = Path.cwd()
+    # 如果当前在 .claude/skills/work-in-process/ 下，向上找到项目根
+    if '.claude' in str(current):
+        while current.name != '.claude' and current != current.parent:
+            current = current.parent
+        if current.name == '.claude':
+            return current.parent
+    # 否则从当前目录向上找 .wip
+    check = current
+    while check != check.parent:
+        if (check / '.wip').exists():
+            return check
+        check = check.parent
+    # 默认返回当前目录
+    return current
+
+
 def create_project(project_name, module_name='core'):
     """创建项目结构"""
-    wip_dir = Path('.wip')
+    project_root = get_project_root()
+    wip_dir = project_root / '.wip'
     wip_dir.mkdir(exist_ok=True)
-    
+
     project_path = wip_dir / project_name
     modules_path = project_path / 'modules' / module_name
     
@@ -239,8 +259,8 @@ def main():
     print(f"  - 模块设计: {project_path / 'modules' / 'core' / 'design.md'}")
     print(f"  - 进度账本: {project_path / 'ledger.md'}")
 
-    # 添加到 .gitignore
-    gitignore = Path('.gitignore')
+    # 添加到 .gitignore（项目根目录）
+    gitignore = project_root / '.gitignore'
     wip_entry = '.wip/'
     if gitignore.exists():
         content = gitignore.read_text(encoding='utf-8')

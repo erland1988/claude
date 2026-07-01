@@ -18,13 +18,23 @@ def get_timestamp():
 
 
 def find_wip_root():
-    """查找 .wip 目录"""
+    """查找 .wip 目录（在项目根目录）"""
     current = Path.cwd()
-    while current != current.parent:
-        wip_path = current / ".wip"
+    # 如果当前在 .claude 下，向上找到项目根
+    if '.claude' in str(current):
+        while current.name != '.claude' and current != current.parent:
+            current = current.parent
+        if current.name == '.claude':
+            wip_path = current.parent / '.wip'
+            if wip_path.exists():
+                return wip_path
+    # 否则从当前目录向上找
+    check = current
+    while check != check.parent:
+        wip_path = check / '.wip'
         if wip_path.exists():
             return wip_path
-        current = current.parent
+        check = check.parent
     return None
 
 

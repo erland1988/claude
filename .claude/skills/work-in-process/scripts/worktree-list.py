@@ -50,8 +50,27 @@ def list_worktrees():
     return worktrees
 
 
-def get_wip_worktrees(wip_root):
+def get_project_root():
+    """获取项目根目录"""
+    current = Path.cwd()
+    if '.claude' in str(current):
+        while current.name != '.claude' and current != current.parent:
+            current = current.parent
+        if current.name == '.claude':
+            return current.parent
+    check = current
+    while check != check.parent:
+        if (check / '.wip').exists():
+            return check
+        check = check.parent
+    return current
+
+
+def get_wip_worktrees(wip_root=None):
     """获取 .wip 下的 worktree"""
+    if wip_root is None:
+        project_root = get_project_root()
+        wip_root = project_root / '.wip'
     worktrees_dir = wip_root / 'worktrees'
     if not worktrees_dir.exists():
         return []
@@ -124,20 +143,13 @@ def main():
 
 def main_simple():
     """简化版本，只列出 .wip/worktrees 下的目录"""
-    current = Path.cwd()
-    wip_root = None
-    
-    while current != current.parent:
-        wip = current / '.wip'
-        if wip.exists():
-            wip_root = wip
-            break
-        current = current.parent
-    
-    if not wip_root:
+    project_root = get_project_root()
+    wip_root = project_root / '.wip'
+
+    if not wip_root.exists():
         print("[ERROR] 未找到 .wip 目录", file=sys.stderr)
         sys.exit(1)
-    
+
     worktrees_dir = wip_root / 'worktrees'
     if not worktrees_dir.exists():
         print("没有 worktree")
