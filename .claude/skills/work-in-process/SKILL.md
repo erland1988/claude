@@ -57,11 +57,12 @@ wip-feishu-upload → 合并上传设计文档
 | `wip-check` | 设计完整性检查 |
 | `wip-code` | 执行编码（自动创建 worktree、子代理驱动） |
 | `wip-review` | 编码后复核 |
+| `wip-clear` | 清空 .wip/ 目录 |
 | `wip-feishu` | 飞书文档管理 |
 
 ## 文件位置
 
-- **子技能**: `skills/{subskill}/SKILL.md`（共 7 个，`wip-init` 无需脚本，由 AI 直接执行）
+- **子技能**: `skills/{subskill}/SKILL.md`（共 8 个，`wip-init` 和 `wip-clear` 无需脚本，由 AI 直接执行）
 - **脚本**: `scripts/`（6 个飞书 API 脚本，其余操作由 AI 直接执行）
 - **子代理**: `skills/wip-code/subagents/`（实现/审查/修复）
 
@@ -89,6 +90,10 @@ wip-feishu-upload → 合并上传设计文档
 ### `wip-review`
 编码后全面复核（对照计划/测试验证/代码质量/Git 检查）。
 详见: `skills/wip-review/SKILL.md`
+
+### `wip-clear`
+清空 .wip/ 目录全部内容（项目 + worktree + feature 分支），含二次确认。
+详见: `skills/wip-clear/SKILL.md`
 
 ### `wip-feishu`
 飞书文档管理（上传/列出/搜索/读取/删除）。

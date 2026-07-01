@@ -15,7 +15,7 @@ wip-review                    # 对照复核（计划 / 测试 / 代码质量 / 
 wip-feishu-upload             # 合并上传设计文档到飞书
 ```
 
-## 子技能（7 个）
+## 子技能（8 个）
 
 | 子技能 | 功能 | 详见 |
 |--------|------|------|
@@ -25,6 +25,7 @@ wip-feishu-upload             # 合并上传设计文档到飞书
 | `wip-check` | 设计完整性检查（执行两次） | `skills/wip-check/SKILL.md` |
 | `wip-code` | 编码（自动 worktree + 子代理驱动） | `skills/wip-code/SKILL.md` |
 | `wip-review` | 编码后复核 | `skills/wip-review/SKILL.md` |
+| `wip-clear` | 清空 .wip/（全部内容 + feature 分支） | `skills/wip-clear/SKILL.md` |
 | `wip-feishu` | 飞书文档管理（上传/列出/搜索/读取/删除） | `skills/wip-feishu/SKILL.md` |
 
 ## 运行时目录结构
@@ -67,6 +68,7 @@ wip-feishu-upload             # 合并上传设计文档到飞书
 │   │       ├── reviewer.md
 │   │       └── fixer.md
 │   ├── wip-review/SKILL.md
+│   ├── wip-clear/SKILL.md
 │   └── wip-feishu/SKILL.md
 ├── scripts/                    # 6 个 Python 脚本（飞书 API 调用）
 │   ├── feishu_common.py        # 公共库（认证/HTTP/工具）
