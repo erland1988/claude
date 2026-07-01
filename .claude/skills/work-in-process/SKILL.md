@@ -61,9 +61,13 @@ wip-feishu-upload → 合并上传设计文档
 
 ## 文件位置
 
-- **子技能**: `skills/{subskill}/SKILL.md`（共 7 个）
-- **脚本**: `scripts/`（共 14 个 Python 脚本）
+- **子技能**: `skills/{subskill}/SKILL.md`（共 7 个，`wip-init` 无需脚本，由 AI 直接执行）
+- **脚本**: `scripts/`（6 个飞书 API 脚本，其余操作由 AI 直接执行）
 - **子代理**: `skills/wip-code/subagents/`（实现/审查/修复）
+
+### `wip-init`
+初始化项目结构，智能命名。纯自然语言执行，无需 Python 脚本。
+详见: `skills/wip-init/SKILL.md`
 
 ### `wip-build`
 生成设计文档（总体+模块），自动判断模块数量并智能命名。

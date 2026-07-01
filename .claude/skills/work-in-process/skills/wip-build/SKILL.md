@@ -63,5 +63,4 @@ description: 生成设计文档（总体+模块），自动判断模块数量并
 
 ## 依赖
 
-- Python 3.7+
-- 脚本: `scripts/module-suggest.py` — 模块命名建议
+无外部脚本依赖。模块命名由 AI 根据职责直接推断，无需 Python 脚本辅助。

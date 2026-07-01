@@ -15,7 +15,7 @@ description: 按 plan.md 执行编码，自动选择执行模式（当前会话/
 3. 全部步骤完成后，自动合并 feature 分支回基分支
 4. 合并后自动清理 worktree 目录和 feature 分支
 
-> Worktree 底层脚本：`scripts/worktree-create.py` / `worktree-list.py` / `worktree-merge.py` / `worktree-clean.py`。用户无需手动调用。
+> Worktree 操作（创建/列出/合并/清理）由 AI 直接执行 `git worktree` 和 `git branch` 命令，无需外部脚本。
 
 ## 执行模式（自动判断）
 

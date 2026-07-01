@@ -68,13 +68,13 @@ wip-feishu-upload             # 合并上传设计文档到飞书
 │   │       └── fixer.md
 │   ├── wip-review/SKILL.md
 │   └── wip-feishu/SKILL.md
-├── scripts/                    # 14 个 Python 脚本
-│   ├── feishu_*.py             # 飞书 API（6 个）
-│   ├── worktree-*.py           # Worktree 管理（4 个）
-│   ├── ledger-update.py        # 账本更新
-│   ├── project-init.py         # 项目初始化
-│   ├── module-suggest.py       # 模块命名建议
-│   └── review-package.py       # 审查包生成
+├── scripts/                    # 6 个 Python 脚本（飞书 API 调用）
+│   ├── feishu_common.py        # 公共库（认证/HTTP/工具）
+│   ├── feishu_upload.py        # 上传设计文档
+│   ├── feishu_list.py          # 列出文档
+│   ├── feishu_search.py        # 搜索文档
+│   ├── feishu_read.py          # 读取文档内容
+│   └── feishu_delete.py        # 删除文档
 ├── templates/
 │   └── list.json               # 飞书列表输出模板
 └── config.json.example         # 飞书配置模板
