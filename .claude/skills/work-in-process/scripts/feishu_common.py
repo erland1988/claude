@@ -4,14 +4,37 @@ import json
 import os
 import re
 import sys
+from pathlib import Path
 
 import requests
 
 BASE_URL = "https://open.feishu.cn/open-apis"
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# 向上三级：scripts -> wip-feishu -> skills -> work-in-process (skill 根目录)
-SKILL_ROOT = os.path.normpath(os.path.join(SCRIPT_DIR, os.pardir, os.pardir, os.pardir))
+
+def _find_skill_root():
+    """从当前脚本位置向上查找 skill 根目录 (work-in-process/)。
+
+    查找策略（按优先级）：
+    1. 从 __file__ 向上一级（scripts -> work-in-process），检查 SKILL.md。
+    2. 仍失败：从 cwd 向上查找 .claude/skills/work-in-process/。
+    """
+    # 策略 1: 从脚本位置向上一级（scripts/ 直接位于 work-in-process/ 下）
+    start = Path(__file__).resolve().parent.parent
+    if (start / "SKILL.md").exists():
+        return str(start)
+
+    # 策略 2: 从 cwd 向上查找
+    cwd = Path.cwd()
+    for parent in [cwd] + list(cwd.parents):
+        target = parent / ".claude" / "skills" / "work-in-process"
+        if target.is_dir():
+            return str(target)
+
+    # 最后回退
+    return str(start)
+
+
+SKILL_ROOT = _find_skill_root()
 CONFIG_PATH = os.path.join(SKILL_ROOT, "config.json")
 
 # 固定根目录名称，所有操作都在该目录下进行

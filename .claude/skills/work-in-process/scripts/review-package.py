@@ -13,7 +13,8 @@ from datetime import datetime
 from pathlib import Path
 
 def get_project_root():
-    """获取项目根目录"""    current = Path.cwd()
+    """获取项目根目录"""
+    current = Path.cwd()
     if '.claude' in str(current):
         while current.name != '.claude' and current != current.parent:
             current = current.parent

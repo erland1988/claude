@@ -5,7 +5,6 @@ WIP 设计文档合并上传脚本
 将总体设计 + 各模块设计合并上传至飞书
 """
 
-import json
 import os
 import re
 import sys
@@ -16,21 +15,11 @@ import requests
 
 from feishu_common import (
     _check_resp, get_tenant_token,
-    find_or_create_root_folder, find_or_create_subfolder, ROOT_FOLDER
+    find_or_create_root_folder, find_or_create_subfolder, ROOT_FOLDER,
+    load_config, validate_config
 )
 
 BASE_URL = "https://open.feishu.cn/open-apis"
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-CONFIG_PATH = os.path.normpath(os.path.join(SCRIPT_DIR, os.pardir, "config.json"))
-
-
-def load_config():
-    """从 config.json 加载飞书配置"""
-    if not os.path.isfile(CONFIG_PATH):
-        print(f"[FAIL] 配置文件不存在: {CONFIG_PATH}")
-        sys.exit(1)
-    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
 
 
 def get_project_root():
@@ -221,6 +210,7 @@ def main():
     print(f"  - 总字数: {stats['total_chars']}")
 
     cfg = load_config()
+    validate_config(cfg)
     app_id = cfg.get("appId", "")
     app_secret = cfg.get("appSecret", "")
     folder_name = cfg.get("folderName", "")

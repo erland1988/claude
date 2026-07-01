@@ -1,4 +1,7 @@
 WIP.md
+./wip
 .cursor
 AGENTS.md
 .venv/
+__pycache__/
+*.pyc

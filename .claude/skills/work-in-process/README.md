@@ -1,0 +1,88 @@
+# WorkInProcess
+
+基于 `.wip/` 目录结构，管理从需求设计到编码实现的完整开发流程。
+
+## 快速开始
+
+```
+wip-init "订单系统重构"        # 创建项目结构，中英文命名
+wip-build                     # 生成分模块设计（总体+模块）
+wip-check                     # 验证设计方案自洽性
+wip-plan                      # 生成执行计划（Phase+Step）
+wip-check                     # 验证计划完整性
+wip-code                      # 自动 worktree → 编码 → 自动 merge
+wip-review                    # 对照复核（计划 / 测试 / 代码质量 / Git）
+wip-feishu-upload             # 合并上传设计文档到飞书
+```
+
+## 子技能（7 个）
+
+| 子技能 | 功能 | 详见 |
+|--------|------|------|
+| `wip-init` | 初始化项目结构，智能命名 | `skills/wip-init/SKILL.md` |
+| `wip-build` | 生成设计文档（总体+模块） | `skills/wip-build/SKILL.md` |
+| `wip-plan` | 生成详细执行计划（Phase+Step） | `skills/wip-plan/SKILL.md` |
+| `wip-check` | 设计完整性检查（执行两次） | `skills/wip-check/SKILL.md` |
+| `wip-code` | 编码（自动 worktree + 子代理驱动） | `skills/wip-code/SKILL.md` |
+| `wip-review` | 编码后复核 | `skills/wip-review/SKILL.md` |
+| `wip-feishu` | 飞书文档管理（上传/列出/搜索/读取/删除） | `skills/wip-feishu/SKILL.md` |
+
+## 运行时目录结构
+
+```
+.wip/{project}/                # 项目根目录（wip-init 创建）
+├── design.md                  # 总体设计文档（wip-build 填充）
+├── modules/                   # 模块目录（wip-build 创建）
+│   └── {module}/              # 按职责自动命名
+│       ├── design.md          # 模块设计文档（wip-build 填充）
+│       └── plan.md            # 执行计划（wip-plan 生成）
+├── ledger.md                  # 进度账本（全阶段自动更新）
+└── worktrees/                 # Git Worktree 目录（wip-code 自动管理）
+    └── {project}/
+        └── {module}/          # 模块独立工作区
+```
+
+## 核心特性
+
+- **智能命名**：中文描述 → 英文项目/模块名
+- **强制模块化**：简单需求=单模块，复杂需求=多模块拆分
+- **自动账本更新**：7 列进度表（设计/计划/worktree/编码/审查/合并），会话 compact 后无损恢复
+- **子代理驱动**：复杂任务自动启用 3 子代理链（实现 → 审查 → 修复）
+- **Worktree 自动管理**：wip-code 自动创建 feature 分支、编码、合并、清理
+
+## 技能内部结构
+
+```
+.claude/skills/work-in-process/
+├── SKILL.md                    # 主技能定义 + 通用规则
+├── README.md                   # 本文件
+├── skills/                     # 7 个子技能
+│   ├── wip-init/SKILL.md
+│   ├── wip-build/SKILL.md
+│   ├── wip-check/SKILL.md
+│   ├── wip-plan/SKILL.md
+│   ├── wip-code/SKILL.md
+│   │   └── subagents/          # 3 个子代理提示词（中文）
+│   │       ├── implementer.md
+│   │       ├── reviewer.md
+│   │       └── fixer.md
+│   ├── wip-review/SKILL.md
+│   └── wip-feishu/SKILL.md
+├── scripts/                    # 14 个 Python 脚本
+│   ├── feishu_*.py             # 飞书 API（6 个）
+│   ├── worktree-*.py           # Worktree 管理（4 个）
+│   ├── ledger-update.py        # 账本更新
+│   ├── project-init.py         # 项目初始化
+│   ├── module-suggest.py       # 模块命名建议
+│   └── review-package.py       # 审查包生成
+├── templates/
+│   └── list.json               # 飞书列表输出模板
+└── config.json.example         # 飞书配置模板
+```
+
+## 环境要求
+
+- Python 3.7+
+- `requests` 库：在 `scripts/` 目录执行 `pip install -r requirements.txt`
+- 飞书功能需配置 `config.json`（`drive:drive` + `docx:document` 权限）
+- 使用 `wip-code` 需系统安装 `git`

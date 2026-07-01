@@ -11,21 +11,29 @@
 │   └── git-push.md        # 一键 git 提交推送
 └── skills/                # 技能模块（可按场景激活）
     ├── api-to-curl/       # 源码 → cURL → Apifox/Postman
-    │   ├── SKILL.md       #   技能定义与执行规则
-    │   └── templates/     #   输出模板
-    └── work-in-process/   # WIP.md 驱动开发 + 飞书归档
+    │   └── SKILL.md       #   技能定义与执行规则
+    └── work-in-process/   # 需求设计 → 编码 → 飞书归档
         ├── SKILL.md       #   技能定义与执行规则
-        ├── config.json.example   #   飞书应用配置模板（入库）
-        ├── config.json           #   飞书应用配置（不入库，复制自 .example 并填写）
-        ├── scripts/       #   飞书 API 交互脚本
-        │   ├── requirements.txt
-        │   ├── feishu_common.py
-        │   ├── feishu_upload.py
-        │   ├── feishu_list.py
-        │   ├── feishu_delete.py
-        │   ├── feishu_search.py
-        │   └── feishu_read.py
-        └── templates/     #   输出模板
+        ├── README.md      #   使用指南
+        ├── skills/        #   子技能（7 个）
+        │   ├── wip-init/SKILL.md        # 初始化项目结构
+        │   ├── wip-build/SKILL.md       # 生成设计文档
+        │   ├── wip-check/SKILL.md       # 设计完整性检查
+        │   ├── wip-plan/SKILL.md        # 生成执行计划
+        │   ├── wip-code/SKILL.md        # 编码（自动 worktree + 子代理）
+        │   ├── wip-review/SKILL.md      # 编码后复核
+        │   └── wip-feishu/SKILL.md      # 飞书文档管理
+        ├── scripts/        # 14 个 Python 脚本（飞书 + worktree + 账本）
+        │   ├── feishu_*.py
+        │   ├── worktree-*.py
+        │   ├── ledger-update.py
+        │   ├── project-init.py
+        │   ├── module-suggest.py
+        │   └── review-package.py
+        ├── templates/      # 输出模板
+        │   └── list.json
+        ├── config.json.example   # 飞书应用配置模板
+        └── config.json           # 飞书应用配置（不入库）
 ```
 
 ## 自定义命令
@@ -72,31 +80,38 @@
 
 ### work-in-process
 
-围绕 `WIP.md` 文件，生成并维护可执行的技术方案，覆盖**需求设计 → 自查 → 编码 → 复核 → 飞书归档**的完整开发流程。
+基于 `.wip/` 目录结构，管理从需求设计到编码实现的完整开发流程。
 
 **开发子命令**：
 
 | 命令 | 功能 |
 |------|------|
-| `wip-init` | 创建或重置 `WIP.md`，写入需求骨架（参考资料/需求背景/设计方案/执行计划等） |
-| `wip-build` | 从对话中提取需求，完善 `WIP.md`——生成设计方案（总体思路/架构概要/关键决策）+ 分阶段执行计划 |
-| `wip-check` | 编码前自查：需求覆盖、方案自洽性、步骤依赖、状态机/数据模型一致性 |
-| `wip-code` | 按执行计划逐步骤编写代码，每步即验，偏差回写 WIP.md |
-| `wip-review` | 编码后全面复核：逐步骤对照源码、回归检查、边界条件验证，输出复核报告 |
+| `wip-init` | 初始化 `.wip/{project}/` 项目结构，中文描述智能推荐英文项目名 |
+| `wip-build` | 生成设计文档（总体设计 + 按职责自动拆分的模块设计） |
+| `wip-check` | 设计完整性检查（全流程执行两次：设计方案后 + 执行计划后） |
+| `wip-plan` | 为指定模块生成详细执行计划（Phase 分阶段 + Step 步骤模板 + 测试矩阵） |
+| `wip-code` | 编码（自动创建 Git Worktree 独立工作区 → 执行编码 → 自动合并回基分支） |
+| `wip-review` | 编码后全面复核（对照计划 / 测试验证 / 代码质量 / Git 检查） |
 
-**工作流程**：`wip-init` → `wip-build` → `wip-check` → `wip-code` → `wip-review` → `wip-feishu-upload`（可选）
+**工作流程**：`wip-init` → `wip-build` → `wip-check` → `wip-plan` → `wip-check` → `wip-code` → `wip-review` → `wip-feishu-upload`（可选）
+
+**核心特性**：
+
+- **子代理驱动**：复杂任务自动启用 3 子代理链（实现 → 审查 → 修复）
+- **自动账本更新**：7 列进度表（设计/计划/worktree/编码/审查/合并），compact 后无损恢复
+- **Worktree 自动管理**：wip-code 自动创建 feature 分支、编码、合并、清理，用户无感
 
 **飞书管理子命令**（需配置飞书应用）：
 
 | 命令 | 功能 |
 |------|------|
-| `wip-feishu-upload` | 将 WIP.md 上传为飞书云文档，按项目归类到 `work-in-process/{folderName}` |
+| `wip-feishu-upload` | 合并上传设计文档（总体设计 + 各模块设计）到飞书 |
 | `wip-feishu-list` | 列出已上传的 WIP 文档，支持分页和 `--tsv` 导出 |
-| `wip-feishu-search` | 按标题关键字搜索已上传的 WIP 文档 |
+| `wip-feishu-search` | 按标题关键字搜索已上传的文档 |
 | `wip-feishu-read` | 按关键字搜索并阅读匹配文档的完整内容 |
-| `wip-feishu-delete` | 删除 WIP 文档（按关键字/doc_id/--all） |
+| `wip-feishu-delete` | 删除文档（按关键字/doc_id/--all） |
 
-**飞书配置**：将 `.claude/skills/work-in-process/config.json.example` 复制为 `config.json`（去 `.example` 后缀），然后填入飞书应用凭证：
+**飞书配置**：将 `.claude/skills/work-in-process/config.json.example` 复制为 `config.json`，填入凭证：
 
 ```json
 {
@@ -106,11 +121,7 @@
 }
 ```
 
-所有文档统一存放在 **云文档根目录 > `work-in-process` > `{folderName}`** 下。
-
-**环境要求**：Python 3.7+，安装 `pip install -r scripts/requirements.txt`（推荐使用 `.venv/` 虚拟环境）；飞书应用需开启 `drive:drive` 权限（读写文档内容额外需要 `docx:document`）。
-
-**执行计划格式**：每个步骤统一模板——`文件 | 位置（方法名+行号） | 背景 | 操作（具体代码/SQL） | 验证`，步骤号不复用，取消步骤保留占位并注明原因。禁止放入"仅确认""参考"等非执行项。
+**环境要求**：Python 3.7+，`pip install -r scripts/requirements.txt`；飞书应用需 `drive:drive` + `docx:document` 权限。
 
 ## 配置说明
 
@@ -119,7 +130,7 @@
 | `AGENTS.md` | 项目规范文档（Claude Code 和 Cursor 共享），由 `/agents-init` 创建 |
 | `.claude/CLAUDE.md` | Claude Code 入口，指向 `@AGENTS.md` |
 | `.cursor/settings.json` | Cursor 配置，指向 `AGENTS.md` |
-| `.gitignore` | 忽略 `.claude/`、`.cursor/`、`.venv/`、`WIP.md` 等本地文件 |
+| `.gitignore` | 忽略 `.claude/`、`.cursor/`、`.venv/`、`.wip/` 等本地文件 |
 
 ## 使用方式
 
@@ -131,6 +142,3 @@
 ## 许可证
 
 MIT
-
-
-## 🐛 问题与改进追踪

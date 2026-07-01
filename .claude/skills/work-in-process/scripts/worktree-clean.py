@@ -42,7 +42,7 @@ def clean_worktree(project_name, module_name, force=False):
     """清理 worktree"""
     project_root = get_project_root()
     wip_root = project_root / '.wip'
-    if not repo_root:
+    if not wip_root.exists():
         print("[ERROR] 未找到 .wip 目录", file=sys.stderr)
         sys.exit(1)
     

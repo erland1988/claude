@@ -91,13 +91,14 @@ def update_module_status(content, module, field, status):
     for i, line in enumerate(lines):
         if line.startswith(f'| {module} '):
             parts = line.split('|')
-            if len(parts) >= 7:
+            if len(parts) >= 8:
                 field_map = {
                     '设计': 2,
                     '计划': 3,
-                    '编码': 4,
-                    '审查': 5,
-                    '合并': 6
+                    'worktree': 4,
+                    '编码': 5,
+                    '审查': 6,
+                    '合并': 7
                 }
                 if field in field_map:
                     parts[field_map[field]] = f' {status} '
@@ -142,9 +143,9 @@ def init_ledger(project_name, module_name='core'):
 - 最后更新: {get_timestamp()}
 
 ## 模块进度
-| 模块 | 设计 | 计划 | 编码 | 审查 | 合并 |
-|------|------|------|------|------|------|
-| {module_name} | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 模块 | 设计 | 计划 | worktree | 编码 | 审查 | 合并 |
+|------|------|------|----------|------|------|------|
+| {module_name} | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 
 ## 详细日志
 | 时间 | 模块 | 动作 | 详情 | 提交 |
@@ -200,7 +201,18 @@ def update_ledger(project_name, action, **kwargs):
         module = kwargs.get('module', 'core')
         content = update_module_status(content, module, '审查', '✅')
         content = add_log_entry(content, module, 'review_complete', '审查通过')
-    
+
+    elif action == 'worktree_created':
+        module = kwargs.get('module', 'core')
+        content = update_module_status(content, module, 'worktree', '✅')
+        content = add_log_entry(content, module, 'worktree_created', 'Worktree 已创建')
+
+    elif action == 'worktree_merged':
+        module = kwargs.get('module', 'core')
+        commit = kwargs.get('commit', '')
+        content = update_module_status(content, module, '合并', '✅')
+        content = add_log_entry(content, module, 'worktree_merged', '已合并到基分支', commit)
+
     elif action == 'add_module':
         module = kwargs.get('module', '')
         # 添加新模块行
@@ -208,7 +220,7 @@ def update_ledger(project_name, action, **kwargs):
             lines = content.split('\n')
             for i, line in enumerate(lines):
                 if line.startswith('| ') and '模块' not in line:
-                    lines.insert(i, f'| {module} | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |')
+                    lines.insert(i, f'| {module} | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |')
                     break
             content = '\n'.join(lines)
             content = add_log_entry(content, module, 'module_added', '新增模块')
@@ -227,6 +239,8 @@ def main():
         print("  plan <project> [module]     - 标记计划完成")
         print("  step <project> <module> <step> [commit] - 标记步骤完成")
         print("  review <project> [module]   - 标记审查完成")
+        print("  wt-create <project> [module] - 标记 worktree 创建")
+        print("  wt-merge <project> <module> [commit] - 标记 worktree 合并")
         print("  add-module <project> <module> - 添加模块")
         sys.exit(1)
     
@@ -253,7 +267,17 @@ def main():
     
     elif action == 'review':
         update_ledger(sys.argv[2], 'review_complete', module=sys.argv[3] if len(sys.argv) > 3 else 'core')
-    
+
+    elif action == 'wt-create':
+        update_ledger(sys.argv[2], 'worktree_created', module=sys.argv[3] if len(sys.argv) > 3 else 'core')
+
+    elif action == 'wt-merge':
+        if len(sys.argv) < 4:
+            print('错误: 需要 project module [commit]', file=sys.stderr)
+            sys.exit(1)
+        update_ledger(sys.argv[2], 'worktree_merged',
+                     module=sys.argv[3], commit=sys.argv[4] if len(sys.argv) > 4 else '')
+
     elif action == 'add-module':
         if len(sys.argv) < 4:
             print("错误: 需要 project module", file=sys.stderr)

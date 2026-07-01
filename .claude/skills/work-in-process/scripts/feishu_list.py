@@ -8,7 +8,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from feishu_common import (
-    SKILL_DIR, ROOT_FOLDER,
+    SKILL_ROOT, ROOT_FOLDER,
     load_config,
     load_json,
     validate_config,
@@ -16,7 +16,7 @@ from feishu_common import (
     list_all_docs,
 )
 
-TEMPLATE_PATH = os.path.join(SKILL_DIR, "templates", "list.json")
+TEMPLATE_PATH = os.path.join(SKILL_ROOT, "templates", "list.json")
 
 DEFAULT_TEMPLATE = {
     "columns": [

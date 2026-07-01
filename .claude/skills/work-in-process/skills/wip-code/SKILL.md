@@ -7,6 +7,16 @@ description: 按 plan.md 执行编码，自动选择执行模式（当前会话/
 
 按模块执行计划（plan.md）逐步骤编写代码，**自动选择执行模式**。
 
+## 核心机制
+
+**wip-code 自动管理 Git Worktree**：
+1. 开始编码前，自动基于当前分支创建 `feature/{project}-{module}` 分支
+2. 在 `.wip/worktrees/{project}/{module}/` 独立工作区中编码，不影响主分支
+3. 全部步骤完成后，自动合并 feature 分支回基分支
+4. 合并后自动清理 worktree 目录和 feature 分支
+
+> Worktree 底层脚本：`scripts/worktree-create.py` / `worktree-list.py` / `worktree-merge.py` / `worktree-clean.py`。用户无需手动调用。
+
 ## 执行模式（自动判断）
 
 | 信号 | 当前会话执行 | 子代理驱动 |
@@ -34,10 +44,10 @@ description: 按 plan.md 执行编码，自动选择执行模式（当前会话/
 读取 plan.md
     │
     ├── Step N: 派实现子代理 (implementer)
-    │       └── 输出：STATUS + COMMITS + TESTS
+    │       └── 输出：状态 + 提交 + 测试
     ├── 生成审查包
     ├── 派审查子代理 (reviewer)
-    │       └── 输出：SPEC_COMPLIANCE + FINDINGS
+    │       └── 输出：规格符合性 + 发现清单
     ├── 判断结果
     │   ├── 通过 → 下一步
     │   └── 需修复 → 派修复子代理 (fixer)
@@ -46,14 +56,18 @@ description: 按 plan.md 执行编码，自动选择执行模式（当前会话/
 
 ### 子代理提示词位置
 
-- `skills/wip-code/subagents/implementer.md`
-- `skills/wip-code/subagents/reviewer.md`
-- `skills/wip-code/subagents/fixer.md`
+- `skills/wip-code/subagents/implementer.md`（实现子代理）
+- `skills/wip-code/subagents/reviewer.md`（审查子代理）
+- `skills/wip-code/subagents/fixer.md`（修复子代理）
 
 ## 通用执行要求
 
-1. 执行前用 `git status` 确认工作区干净
-2. 按 Step 模板执行：文件 / 位置 / 操作 / 验证
-3. 若发现 plan.md 与实际代码有出入，先回写更新
-4. 每步验证通过后再进行下一步
-5. **自动更新 ledger.md**
+1. **自动创建 worktree**：基于当前分支创建 feature 分支和独立工作区
+2. 执行前用 `git status` 确认工作区干净
+3. 按 Step 模板顺序逐一执行，根据复杂度自动选择当前会话或子代理驱动模式
+4. 每步执行：编码 → 验证（编译/单测）→ 提交，通过后再进行下一步
+5. 若某步骤失败，暂停并报告问题，等待人工介入
+6. 若发现 plan.md 与实际代码有出入，先回写更新 plan.md 再继续，保持文档与代码同步
+7. 全部步骤完成后做格式扫尾：确保新增代码与项目既有风格统一
+8. **自动合并**：所有 Step 通过后，将 feature 分支合并回基分支，清理 worktree
+9. **自动更新 ledger.md**：记录每步完成状态和合并信息

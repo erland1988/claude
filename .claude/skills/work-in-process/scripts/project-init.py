@@ -200,9 +200,9 @@ def create_project(project_name, module_name='core'):
 - 最后更新: {get_timestamp()}
 
 ## 模块进度
-| 模块 | 设计 | 计划 | 编码 | 审查 | 合并 |
-|------|------|------|------|------|------|
-| {module_name} | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 模块 | 设计 | 计划 | worktree | 编码 | 审查 | 合并 |
+|------|------|------|----------|------|------|------|
+| {module_name} | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 
 ## 详细日志
 | 时间 | 模块 | 动作 | 详情 | 提交 |
@@ -260,6 +260,7 @@ def main():
     print(f"  - 进度账本: {project_path / 'ledger.md'}")
 
     # 添加到 .gitignore（项目根目录）
+    project_root = get_project_root()
     gitignore = project_root / '.gitignore'
     wip_entry = '.wip/'
     if gitignore.exists():
