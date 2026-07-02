@@ -22,15 +22,15 @@ wip-load "order-system-v2"    # 加载项目上下文（进度/决策/Git 状态
 
 | 子技能 | 功能 | 详见 |
 |--------|------|------|
-| `wip-init` | 初始化项目结构，智能命名 | `skills/wip-init/SKILL.md` |
-| `wip-load` | 加载项目上下文，会话中断后恢复 | `skills/wip-load/SKILL.md` |
-| `wip-build` | 生成设计文档（总体+模块） | `skills/wip-build/SKILL.md` |
-| `wip-plan` | 生成详细执行计划（Phase+Step） | `skills/wip-plan/SKILL.md` |
-| `wip-check` | 设计完整性检查（执行两次） | `skills/wip-check/SKILL.md` |
-| `wip-code` | 编码（自动 worktree + 子代理驱动） | `skills/wip-code/SKILL.md` |
-| `wip-review` | 编码后复核 | `skills/wip-review/SKILL.md` |
-| `wip-clear` | 清空 .wip/（全部内容 + feature 分支） | `skills/wip-clear/SKILL.md` |
-| `wip-feishu` | 飞书文档管理（上传/列出/搜索/读取/删除） | `skills/wip-feishu/SKILL.md` |
+| `wip-init` | 初始化项目结构，智能命名 | `wip-init.md` |
+| `wip-load` | 加载项目上下文，会话中断后恢复 | `wip-load.md` |
+| `wip-build` | 生成设计文档（总体+模块） | `wip-build.md` |
+| `wip-plan` | 生成详细执行计划（Phase+Step） | `wip-plan.md` |
+| `wip-check` | 设计完整性检查（执行两次） | `wip-check.md` |
+| `wip-code` | 编码（自动 worktree + 子代理驱动） | `wip-code.md` |
+| `wip-review` | 编码后复核 | `wip-review.md` |
+| `wip-clear` | 清空 .wip/（全部内容 + feature 分支） | `wip-clear.md` |
+| `wip-feishu` | 飞书文档管理（上传/列出/搜索/读取/删除） | `wip-feishu.md` |
 
 ## 运行时目录结构
 
@@ -62,20 +62,19 @@ wip-load "order-system-v2"    # 加载项目上下文（进度/决策/Git 状态
 .claude/skills/work-in-process/
 ├── SKILL.md                    # 主技能定义 + 通用规则
 ├── README.md                   # 本文件
-├── skills/                     # 9 个子技能
-│   ├── wip-init/SKILL.md
-│   ├── wip-load/SKILL.md
-│   ├── wip-build/SKILL.md
-│   ├── wip-check/SKILL.md
-│   ├── wip-plan/SKILL.md
-│   ├── wip-code/SKILL.md
-│   │   └── subagents/          # 3 个子代理提示词（中文）
-│   │       ├── implementer.md
-│   │       ├── reviewer.md
-│   │       └── fixer.md
-│   ├── wip-review/SKILL.md
-│   ├── wip-clear/SKILL.md
-│   └── wip-feishu/SKILL.md
+├── wip-init.md                 # 初始化项目结构
+├── wip-load.md                 # 加载上下文，会话恢复
+├── wip-build.md                # 生成设计文档
+├── wip-check.md                # 设计完整性检查
+├── wip-plan.md                 # 生成执行计划
+├── wip-code.md                 # 执行编码
+├── subagents/                  # 3 个子代理提示词（wip-code 专用）
+│   ├── implementer.md
+│   ├── reviewer.md
+│   └── fixer.md
+├── wip-review.md               # 编码后复核
+├── wip-clear.md                # 清空 .wip/
+├── wip-feishu.md               # 飞书文档管理
 ├── scripts/                    # 6 个 Python 脚本（飞书 API 调用）
 │   ├── feishu_common.py        # 公共库（认证/HTTP/工具）
 │   ├── feishu_upload.py        # 上传设计文档

@@ -56,9 +56,9 @@ description: 按 plan.md 执行编码，自动选择执行模式（当前会话/
 
 ### 子代理提示词位置
 
-- `skills/wip-code/subagents/implementer.md`（实现子代理）
-- `skills/wip-code/subagents/reviewer.md`（审查子代理）
-- `skills/wip-code/subagents/fixer.md`（修复子代理）
+- `subagents/implementer.md`（实现子代理）
+- `subagents/reviewer.md`（审查子代理）
+- `subagents/fixer.md`（修复子代理）
 
 ## 通用执行要求
 
