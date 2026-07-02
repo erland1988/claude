@@ -44,4 +44,4 @@ description: 飞书文档管理（上传/列出/搜索/读取/删除）
 
 - 脚本: `scripts/feishu_*.py`
 - 飞书应用需有 `drive:drive` 和 `docx:document` 权限
-- 配置：`config.json`（appId/appSecret/folderName）
+- 配置：`.wip/config.json`（wip-init 自动创建）

@@ -143,14 +143,36 @@ mkdir -p ".wip/{project_name}/modules/core"
 
 > `{YYYY-MM-DD HH:mm:ss}` 和 `{HH:mm}` 替换为执行时的实际时间。
 
-### 步骤 7：更新 .gitignore
+### 步骤 7：检查飞书配置
+
+检查 `.wip/config.json` 是否存在：
+
+```bash
+test -f .wip/config.json && echo "EXISTS" || echo "NOT_FOUND"
+```
+
+如果不存在 → 创建：
+
+```json
+{
+  "appId": "",
+  "appSecret": "",
+  "folderName": "work-in-process"
+}
+```
+
+> 用户后续填入飞书应用的 `appId` 和 `appSecret` 后，`wip-feishu-upload` 等命令即可使用。
+
+### 步骤 9：更新 .gitignore
 
 检查项目根目录的 `.gitignore`：
 - 如果文件不存在 → 创建并写入 `.wip/`
 - 如果文件存在但无 `.wip/` 条目 → 追加 `.wip/`
 - 如果已有 `.wip/` 条目 → 跳过
 
-### 步骤 8：输出确认
+### 步骤 10：输出确认
+
+### 步骤 9：输出确认
 
 目录结构创建完成后，向用户汇报：
 

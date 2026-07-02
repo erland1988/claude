@@ -35,7 +35,11 @@ def _find_skill_root():
 
 
 SKILL_ROOT = _find_skill_root()
-CONFIG_PATH = os.path.join(SKILL_ROOT, "config.json")
+# config.json 在项目根目录的 .wip/ 下
+# SKILL_ROOT: .../project/.claude/skills/work-in-process
+# 往上 2 级到 .claude，再往上到项目根
+_PROJECT_ROOT = Path(SKILL_ROOT).parent.parent.parent
+CONFIG_PATH = os.path.join(str(_PROJECT_ROOT), ".wip", "config.json")
 
 # 固定根目录名称，所有操作都在该目录下进行
 ROOT_FOLDER = "work-in-process"

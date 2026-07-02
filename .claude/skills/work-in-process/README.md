@@ -84,12 +84,12 @@ wip-load "order-system-v2"    # 加载项目上下文（进度/决策/Git 状态
 │   └── feishu_delete.py        # 删除文档
 ├── templates/
 │   └── list.json               # 飞书列表输出模板
-└── config.json.example         # 飞书配置模板
+└── subagents/                   # wip-code 子代理提示词
 ```
 
 ## 环境要求
 
 - Python 3.7+
 - `requests` 库：在 `scripts/` 目录执行 `pip install -r requirements.txt`
-- 飞书功能需配置 `config.json`（`drive:drive` + `docx:document` 权限）
+- 飞书功能需配置 `.wip/config.json`（wip-init 自动创建，`drive:drive` + `docx:document` 权限）
 - 使用 `wip-code` 需系统安装 `git`
