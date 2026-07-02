@@ -13,13 +13,17 @@ wip-check                     # 验证计划完整性
 wip-code                      # 自动 worktree → 编码 → 自动 merge
 wip-review                    # 对照复核（计划 / 测试 / 代码质量 / Git）
 wip-feishu-upload             # 合并上传设计文档到飞书
+
+# 会话中断后恢复
+wip-load "order-system-v2"    # 加载项目上下文（进度/决策/Git 状态）
 ```
 
-## 子技能（8 个）
+## 子技能（9 个）
 
 | 子技能 | 功能 | 详见 |
 |--------|------|------|
 | `wip-init` | 初始化项目结构，智能命名 | `skills/wip-init/SKILL.md` |
+| `wip-load` | 加载项目上下文，会话中断后恢复 | `skills/wip-load/SKILL.md` |
 | `wip-build` | 生成设计文档（总体+模块） | `skills/wip-build/SKILL.md` |
 | `wip-plan` | 生成详细执行计划（Phase+Step） | `skills/wip-plan/SKILL.md` |
 | `wip-check` | 设计完整性检查（执行两次） | `skills/wip-check/SKILL.md` |
@@ -47,6 +51,7 @@ wip-feishu-upload             # 合并上传设计文档到飞书
 
 - **智能命名**：中文描述 → 英文项目/模块名
 - **强制模块化**：简单需求=单模块，复杂需求=多模块拆分
+- **会话恢复**：`wip-load` 加载项目上下文，决策记录持久化，中断后无缝衔接
 - **自动账本更新**：7 列进度表（设计/计划/worktree/编码/审查/合并），会话 compact 后无损恢复
 - **子代理驱动**：复杂任务自动启用 3 子代理链（实现 → 审查 → 修复）
 - **Worktree 自动管理**：wip-code 自动创建 feature 分支、编码、合并、清理
@@ -57,8 +62,9 @@ wip-feishu-upload             # 合并上传设计文档到飞书
 .claude/skills/work-in-process/
 ├── SKILL.md                    # 主技能定义 + 通用规则
 ├── README.md                   # 本文件
-├── skills/                     # 7 个子技能
+├── skills/                     # 9 个子技能
 │   ├── wip-init/SKILL.md
+│   ├── wip-load/SKILL.md
 │   ├── wip-build/SKILL.md
 │   ├── wip-check/SKILL.md
 │   ├── wip-plan/SKILL.md
